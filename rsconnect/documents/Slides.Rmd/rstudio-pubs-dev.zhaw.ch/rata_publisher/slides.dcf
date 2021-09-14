@@ -1,0 +1,12 @@
+name: slides
+title: Slides
+username: rata_publisher
+account: rata_publisher
+server: rstudio-pubs-dev.zhaw.ch
+hostUrl: https://rstudio-pubs-dev.zhaw.ch/__api__
+appId: 171
+bundleId: 266
+url: http://rstudio-pubs-dev.zhaw.ch/content/171/
+when: 1548295063.42562
+asMultiple: TRUE
+asStatic: TRUE

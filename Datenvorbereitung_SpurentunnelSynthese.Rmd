@@ -1,0 +1,234 @@
+---
+title: "Anfrage Statistikberatung Spurentunnel"
+subtitle: "Detection probability und Anpassung Versuchsdesign" 
+author: "Nils Ratnaweera"
+output:
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(kableExtra.latex.load_packages = FALSE)
+
+library(tidyverse)
+library(sf)
+library(broom)
+
+
+```
+
+## Daten einlesen und säubern
+
+```{r}
+cscf2010_raw <- read_delim("Data/2010_CSCF_MustelidMonitoringCH/NRatnaweera mustelidenmonitoring 2010 20180110.csv",";",
+           locale = locale(encoding = "Windows-1252"))
+
+# August – September: 1 (Glâne-Gruyère FR), 3 (Jura Central JU_BE), 4 (Rottal LU), 7 (Unterengadin GR)
+# Oktober – November: 2 (Bas-Valais VS_VD), 5 (Klingnau AG_ZH), 6 (Linthebene GL_SG_SZ), 8 (Riviera-Madadino TI)
+
+cscf2010_processed <- cscf2010_raw %>%
+  st_as_sf(coords = c("CX","CY")) %>%
+  st_set_crs(21781) %>%
+  st_transform(2056) %>%
+  cbind(st_coordinates(.)) %>%
+  st_set_geometry(NULL) %>%
+  filter(GATTUNG == "Mustela",
+         JAHR == 2010) %>%
+  mutate(start = case_when(
+    KANTON %in% c("FR","JU","BE","LU","GR")~parse_date("2010-08-01"),
+    KANTON %in% c("VS","VD","AG","ZH","GL","SG","SZ","TI")~parse_date("2010-09-28")
+  )) %>%
+  transmute(art_full = paste(GATTUNG,ART),
+            E = X, 
+            N = Y,
+            KM2,
+            Datum = as.Date(paste(JAHR,MONAT,TAG,sep = "-")),
+            Tunnel = STATION,
+            Kanton = KANTON,
+            Tag = as.integer(difftime(Datum,start,units = "days"))+ 1,
+            Woche = as.integer(Tag %/% 7 + 1)
+            )
+
+```
+
+
+# Daten aufbereiten
+
+```{r include=FALSE}
+
+
+cscf2010_nest <- cscf2010_processed %>%
+  group_by(KM2) %>%                                   # Turns the arbitary Tunnelnrs
+  mutate(Tunnel = match(Tunnel, unique(Tunnel)) ) %>% # into integers starting from 1
+  select(art_full,Kanton,KM2,Tunnel,E,N,Woche) %>%
+  group_by_all() %>%                                  # There sometimes are >1 detections
+  summarise() %>%                                     # within the same week: remove these
+  arrange() %>%
+  group_by_at(vars(-matches("Woche"))) %>%           
+  mutate(
+    detect = 1,
+    ) %>%
+  complete(Woche = 0:8, fill = list(detect = 0)) %>%
+  mutate(
+    detect_cum = cummax(detect)
+  ) %>%
+  group_by(art_full) %>%
+  nest()
+
+save(cscf2010_nest,file = "Data/2010_CSCF_MustelidMonitoringCH/cscf2010_nest.Rda")
+
+
+```
+
+## Logistische Regression
+
+
+```{r}
+
+training_data <- cscf2010_nest %>%
+  mutate(
+    data = map(data, function(x){
+      x %>%
+        filter(Woche <= 4)
+    })
+  )
+
+model_output <- training_data %>%
+  mutate(
+    logreg_mod = map(data, ~glm(detect_cum ~ Woche, data = .x, family = "binomial")),
+    predicted = map(logreg_mod, ~augment(.x,type.predict = "response",newdata = crossing(Woche = seq(1,10,0.1), detect_cum = c(0,1)))),
+  )
+
+model_predicted <- model_output%>%
+  unnest(predicted)
+
+
+thresh_lines <- model_predicted %>%
+  filter(detect_cum == 1) %>%
+  group_by(art_full) %>%
+  mutate(min95 = abs(.fitted-0.95), 
+         groupmin95 = min(min95)) %>%
+  filter(Woche == 6 | min95 == groupmin95) %>%
+  mutate(
+    text = ifelse(Woche == 6,"Woche 6","90% Threshold")
+  )
+
+
+cscf2010_nest %>% 
+  unnest() %>%
+  mutate(type = ifelse(Woche <= 4,"training","test")) %>%
+  ggplot(aes(Woche,detect_cum)) + 
+  geom_hline(data = thresh_lines,aes(yintercept = .fitted), lty = 2, colour = "lightgrey") +
+  geom_vline(data = thresh_lines, aes(xintercept = Woche), lty = 2, colour = "lightgrey") +
+  geom_text(data = filter(thresh_lines,Woche == 6), aes(x = 2, y = .fitted,label = text), hjust = 0) +
+  geom_text(data = filter(thresh_lines,Woche != 6), aes(x = Woche, y = 0.2,label = text), hjust = 0,angle = 90) +
+  geom_jitter(height = 0.05,width = 0.25,aes(colour = factor(type),shape = type),size = 0.3) +
+  geom_ribbon(data = model_predicted, aes(Woche, ymin = .fitted-.se.fit,ymax = .fitted+.se.fit), alpha = 0.3,colour = "grey") +
+  geom_line(data = model_predicted, aes(Woche,.fitted )) +
+  scale_x_continuous(breaks = 1:10) +
+  scale_y_continuous(name = "Predicted probability of detection",labels = scales::percent,breaks = sort(c(seq(0,1,0.2)))) +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  facet_grid(art_full~.)
+
+
+
+
+# #Modeldiagnostik (wenn nicht signifikant, dann OK)
+# 1 - pchisq(logreg_mod$deviance,logreg_mod$df.residual)
+# 
+# #Modellgüte(pseudo-R2)
+# 1 - (logreg_mod$deviance / logreg_mod$null.deviance)
+
+```
+
+
+
+
+## Datenexploration
+
+Hier in paar Visualisierungen und Kennzahlen um den Datzsatz besser kennen zu lernen.
+
+Insgesamt sind es `r nrow(cscf2010_erminea_wide)` und `r length(unique(cscf2010_erminea_wide$KM2))` Kilometerquadrate. Insgesamt wurden `r sum(cscf2010_erminea$detect)` Hermelin-Nachweise erziehlt.
+
+Anzahl positiv-Nachweise pro Spurentunnel:
+```{r}
+
+cscf2010_erminea <- cscf2010_nest$data[cscf2010_nest$art_full == "Mustela erminea"][[1]]
+
+cscf2010_erminea %>%
+  group_by(Tunnel) %>%
+  summarise(sum = sum(detect)) %>% 
+  group_by(sum) %>%
+  count() %>%
+  ggplot(aes(sum,n)) + 
+  geom_col() +
+  labs(x = "Summe der Nachweise pro Spurentunnel",y = "Anzahl Spurentunnel") +
+  theme_classic() 
+```
+
+
+Detektionen über die Zeit:
+```{r, fig.height=6.5}
+
+cscf2010_erminea_complete_long <- cscf2010_erminea_complete %>%
+  gather(Woche,detect,starts_with("W")) 
+
+cscf2010_erminea_complete_long %>%
+  group_by(KM2,Tunnel) %>%
+  filter(any(detect)) %>%
+  ungroup() %>%
+  mutate(Tunnel = factor(Tunnel)) %>%
+  ggplot(aes(Woche,Tunnel, fill = detect))+
+  geom_tile(colour = "black") +
+  scale_x_discrete(labels = 1:8) +
+  coord_equal() +
+  facet_wrap(~KM2) +
+  labs(title = "Präsenz / Absenz pro Woche und Tunnel",
+       subtitle = "Aufgeteilt nach Kilometerquadrate", fill = "Detection") +
+  theme_classic()
+```
+
+Räumliche Verteilung der Spurentunnel:
+
+```{r, echo = F}
+kilometerquadrate <- cscf2010_erminea %>%
+  group_by(KM2) %>%
+  summarise() %>%
+  separate(KM2, into = c("x","y"),3, remove = F,convert = T) %>%
+  rowwise() %>%
+  mutate(
+    geometry = st_sfc(
+      st_polygon(
+        list(cbind(
+          c(x,x+1,x+1,x,x)*1000,
+          c(y,y,y+1,y+1,y)*1000
+        )
+        )
+      )
+    )
+  ) %>%
+  st_sf() %>%
+  st_set_crs(21781) %>%
+  st_transform(2056) 
+
+library(swissvector4r)
+
+data("landesgebiet")
+data("seen")
+
+
+ggplot(kilometerquadrate) + 
+  geom_sf(aes(fill = factor(KM2))) +
+  # geom_sf(data = landesgebiet,inherit.aes = F, fill = NA) +
+  # geom_sf(data = head(arrange(seen, desc(SHP_AREA)),7),fill = "cornflowerblue") +
+  theme(legend.position = "none") +
+  labs(title = "Standorte der Kilometerquadrate") +
+  coord_sf(datum = 2056)
+
+```
+
+
+
+
+

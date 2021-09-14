@@ -1,0 +1,30 @@
+﻿Tierart;Animal;Species;Group;Group_desc;TubeCam;Cameratrap;Trackingtunnel
+Iltis;Mustela putorius;Mustela putorius;Priority;Mustelids & Dormice;1;16;
+Siebenschläfer;Glis glis;Glis glis;Priority;Mustelids & Dormice;;;9
+Hermelin;Mustela erminea;Mustela erminea;Priority;Mustelids & Dormice;;1;1
+Mauswiesel;Mustela nivalis;Mustela nivalis;Priority;Mustelids & Dormice;;;1
+Steinmarder;Martes foina;Martes foina;Priority;Mustelids & Dormice;;22;
+Dachs;Meles meles;Meles meles;Priority;Mustelids & Dormice;;7;
+Waldmaus;Apodemus;Apodemus;Secondary;Small Mammals;181;224;300
+Wühlmaus;Arvicolinae;Arvicolinae;Secondary;Small Mammals;8;14;
+Wasserspitzmaus;Neomys fodiens;Neomys fodiens;Secondary;Small Mammals;1;;
+Eichhörnchen;Sciurus vulgaris;Sciurus vulgaris;Secondary;Small Mammals;1;43;2
+Spitzmäuse;Soricidae;Soricidae;Secondary;Small Mammals;1;1;
+Igel;Erinaceus europaeus;Erinaceus europaeus;Secondary;Small Mammals;;2;
+Fuchs;Vulpes vulpes;Vulpes vulpes;other;wild mammals;1;159;
+Reh;Capreolus capreolus;Capreolus capreolus;other;wild mammals;;18;
+Katze;Felis silvestris;Felis silvestris;other;domesticated mammals;;115;1
+Hund;Canis lupus familiaris;Canis lupus familiaris;other;domesticated mammals;;12;
+Bussard;Buteo buteo;Buteo buteo;other;birds;;1;
+Amsel;Turdus merula;Turdus merula;other;birds;;58;
+Buchfink;Fringilla coelebs;Fringilla coelebs;other;birds;;9;
+Ringeltaube;Columba palumbus;Columba palumbus;other;birds;;15;
+Graureiher;Ardea cinerea;Ardea cinerea;other;birds;;10;
+Rabenvögel;Corvidae;Corvidae;other;birds;;10;
+Kleiber;Sitta europaea;Sitta europaea;other;birds;;1;
+Kohlmeise;Parus major;Parus major;other;birds;;7;
+Eichelhäher;Garrulus glandarius;Garrulus glandarius;other;birds;;8;
+Tannenmeise;Periparus ater;Periparus ater;other;birds;;1;
+Habicht;Accipiter gentilis;Accipiter gentilis;other;birds;;2;
+Heuschrecken;Orthoptera;Orthoptera;other;non mammal;1;;
+Laufkäfer;Carabidae;Carabidae;other;non mammal;1;;

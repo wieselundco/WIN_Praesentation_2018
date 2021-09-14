@@ -1,0 +1,15 @@
+Start;Datum;Dauer;Anzahl_Geraete;Anzahl_fallennaechte;Fallennaechte_summiert;Art;Anzahl_Arten_Summiert;Method
+13.07.2017;13.07.2017;0;12;0;0;;0;Trackingtunnel
+13.07.2017;20.07.2017;7;12;84;84;Apodemus;1;Trackingtunnel
+20.07.2017;25.07.2017;5;12;60;144;Glis glis, Sciurus vulgaris;3;Trackingtunnel
+25.07.2017;28.08.2017;34;12;408;552;Mustela nivalis;6;Trackingtunnel
+28.08.2017;04.09.2017;7;12;84;636;Mustela erminea;7;Trackingtunnel
+;;0;0;0;0;;0;TubeCam
+;13.07.2017;1;3;3;3;Apodemus;1;TubeCam
+;14.07.2017;1;3;3;6;Arvicolinae;2;TubeCam
+;24.07.2017;2;3;6;12;Soricidae;3;TubeCam
+;29.07.2017;2;3;6;18;Sciurus vulgaris;4;TubeCam
+;09.08.2017;3;3;9;27;Mustela putorius;5;TubeCam
+;30.08.2017;4;3;12;39;Neomys fodiens;6;TubeCam
+;13.07.2017;0;0;0;0;;0;Cameratrap
+13.07.2017;21.09.2017;71;6;377;377;;9;Cameratrap

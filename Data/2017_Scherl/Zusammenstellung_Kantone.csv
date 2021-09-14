@@ -1,0 +1,27 @@
+Abk.;Name;Link;Bemerkung;Rohdaten;Abgeleitete_Daten;Punktwolkedichte;Verfuegbar
+ZH;Zürich;https://are.zh.ch/internet/baudirektion/are/de/aktuell/mitteilungen/gis/2015/hoehendatenzh.html;Frei verfügbar;x;x;8;ja
+BE;Bern;https://www.geo.apps.be.ch/de/geodaten/suche-nach-geodaten.html?view=sheet&preview=search_list&catalog=geocatalog&type=complete&guid=1b524f18-7513-49d7-adb1-537dc5a8f1d0;;?;x;4;ja
+LU;Luzern;https://geoportal.lu.ch/geodaten;;x;;16;ja
+UR;Uri;;nichts gefunden;;;;unbekannt
+SZ;Schwyz;;nichts gefunden;;;;unbekannt
+OW;Obwalden;http://www.planfor.ch/sites/default/files/docs/praxis/LiDAR%20im%20Walld/6b_LiDAR_OW_d%20%5BCompatibility%20Mode%5D.pdf;nichts gefunden;;;;unbekannt
+NW;Nidwalden;;nichts gefunden;;;;unbekannt
+GL;Glarus;;nichts gefunden;;;;unbekannt
+ZG;Zug;https://www.zg.ch/behoerden/direktion-des-innern/geoportal/geodaten-beziehen;;x;x;4;unbekannt
+FR;Freiburg;https://www.fr.ch/de/vga/raum-planung-und-bau/karten/hoehenmodelle;vermutlich kostenlos;x;x;5;ja
+SO;Solothurn;https://geoweb.so.ch/map/lidar;;x;x;;ja
+BS;Basel-Stadt;;vermutlich vorhanden;;;;ja
+BL;Basel-Landschaft;;vermutlich vorhanden;;;;ja
+SH;Schaffhausen;;nichts gefunden;;;;unbekannt
+AR;Appenzell Ausserrhoden;;nichts gefunden;;;;unbekannt
+AI;Appenzell Innerrhoden;;nichts gefunden;;;;unbekannt
+SG;St.Gallen;;nichts gefunden;;;;unbekannt
+GR;Graubünden;;nichts gefunden;;;;unbekannt
+AG;Aargau;https://www.ag.ch/de/dvi/grundbuch_vermessung/produkte/dtm_av_dom/DTM_AV___DOM.jsp;Frei verfügbar;x;x;14;ja
+TG;Thurgau;;nichts gefunden;;;;unbekannt
+TI;Tessin;;nichts gefunden;;;;unbekannt
+VD;Waadt;https://www.vd.ch/themes/territoire-et-construction/informations-sur-le-territoire/geodonnees/altimetrie-lidar/lidar-2015/;;x;x;5;ja
+VS;Wallis;https://www.vs.ch/de/web/egeo/geodonnees;vermutlich keine Rohdaten oder nur auf anfrage;;x;;ja
+NE;Neuenburg;https://sitn.ne.ch/lidar/;vermutlich erhältlich;x;x;;ja
+GE;Genf;https://opendata.swiss/dataset/nuages-de-points-lidar-2013;;x;x;;ja
+JU;Jura;;nichts gefunden;;;;unbekannt
